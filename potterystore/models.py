@@ -18,10 +18,21 @@ class Product(models.Model):
     name = models.CharField(max_length=200)
     price = models.FloatField()
     image = models.ImageField(null=True, blank=True)
+
     def __str__(self):
         return str(self.name)
+    
+    @property
+    def imageURL(self):
+        try:
+            url = self.image.url
+        except:
+            url = 'static/images/placeholder image.png'
+        return url
+
 # identical model except it must return the name of the product (no null=True) because that's key information
 # the price can be stored as floating-point number in case the product has a decimal point. I justify this as good practise although I don't intend to sell pottery for £45.72
+# the image field allows for the optional action to add an image to our product in the admin database
 # Once again it returns a string representation of the name of the product for database purposes
 
 class Order(models.Model):
