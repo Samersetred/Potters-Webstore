@@ -49,3 +49,16 @@ class OrderItem(models.Model):
 # Here we're creating a class for our ordered product, linking it to the Product and Order classes, noting the quantity and date the product was added to the order
 # This will store information in our database that will be used by our cart page.
 
+class ShippingAddress(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    address = models.CharField(max_length=200, null=False)
+    city = models.CharField(max_length=200, null=True, blank=True)
+    postcode = models.CharField(max_length=200, null=False)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.address
+    
+    # For my shipping adddress class, I'm making the city optional as not all customer's live in cities
+
