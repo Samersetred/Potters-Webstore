@@ -50,8 +50,20 @@ def logoutUser(request):
     return redirect('login')
 
 def store(request):
+
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        #Create empty cart for non-logged in users
+        items = []
+        order = {'get_cart_total':0, 'get_cart_items':0}
+        cartItems = order['get_cart_items']
+            
     products = Product.objects.all()
-    context = {'products':products}
+    context = {'products': products, 'cartItems': cartItems}
     return render(request, 'potterystore/store.html', context)
 # This 
 
@@ -61,27 +73,32 @@ def updateItem(request):
 	action = data['action']
 	print('Action:', action)
 	print('Product:', productId)
+    # this parses the request data
 
 	customer = request.user.customer
 	product = Product.objects.get(id=productId)
+    # this retrieves the customer info and product
+
 	order, created = Order.objects.get_or_create(customer=customer, complete=False)
-     
-     # using productId to query the product
+    # this retrieves, if products have already been ordered, or creates the order
 
 	orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
+    # this retrieves, if products have already been ordered, or creates the order item
 
 	if action == 'add':
 		orderItem.quantity = (orderItem.quantity + 1)
 	elif action == 'remove':
 		orderItem.quantity = (orderItem.quantity - 1)
+    # this updates the order item quantity
 
 	orderItem.save()
 
 	if orderItem.quantity <= 0:
 		orderItem.delete()
+    # this saves or deletes the order item
 
 	return JsonResponse('Item was added', safe=False)
-
+    # this returns a Json response 'Item was added'
 
 def cart(request):
     if request.user.is_authenticated:
@@ -91,11 +108,13 @@ def cart(request):
             customer = Customer.objects.create(user=request.user)
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
         items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
     else:
         items = []
         order = {'get_cart_total': 0, 'get_cart_items': 0}
+        cartItems = order['get_cart_items']
 
-    context = {'items':items, 'order':order}
+    context = {'items':items, 'order':order, 'cartItems':cartItems}
     return render(request, 'potterystore/cart.html', context)
 
     # This is for the cart, and our cart page. If the user has made an account (is authenticated), and added items to their cart, but not checked out, this maintains the items in their cart upon their next visit to the site
@@ -104,20 +123,20 @@ def cart(request):
     # then it retrieves the Customer object associated with the user (their data in the database, which includes the items in their cart)
     # if they already have products in their cart, it retrieves those, or it creates a new one 
     # then it retrieves all the items associated with that order
-    
     # if the user is just an unlogged in guest, their items are just an empty list, nothing in their cart, cart displays a zero
 
 
 def checkout(request):
-	if request.user.is_authenticated:
-		customer = request.user.customer
-		order, created = Order.objects.get_or_create(customer=customer, complete=False)
-		items = order.orderitem_set.all()
-	else:
-		items = []
-		order = {'get_cart_total':0, 'get_cart_items':0}
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        items = order.orderitem_set.all()
+    else:
+        items = []
+        order = {'get_cart_total':0, 'get_cart_items':0}
+        cartItems = order['get_cart_items']
     # This is for the empty cart for now for non-logged in user
 
-	context = {'items':items, 'order':order}
-	return render(request, 'potterystore/checkout.html', context)
+    context = {'items':items, 'order':order, 'cartItems':cartItems}
+    return render(request, 'potterystore/checkout.html', context)
     

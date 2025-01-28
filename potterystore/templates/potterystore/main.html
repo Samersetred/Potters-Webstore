@@ -48,7 +48,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-              <a class="nav-link" href="{% url 'store' %}">Shop<span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="{% url 'store' %}">Shop<span class="sr-only"></span></a>
             </li>
           </ul>
 
@@ -57,12 +57,12 @@
                
                <a href="{% url 'cart' %}" class="d-flex align-items-center">
                   <img id="cart-icon" src="{% static 'images/cart.png' %}" class="me-2">
-                  <p id="cart-total" class="mb-0">0</p>
+                  <p id="cart-total" class="mb-0">{{ cartItems }}</p>
               </a>
           </div>
         </div>
         <div>
-        <span id="hello-msg">Hello, {{request.user}}</span>
+        <span id="hello-msg">Hello, {{ request.user }}</span>
         <span><a href="{% url 'logout' %}" class="btn btn-warning me-2">Logout</a></span>
         </div>
       </nav>
