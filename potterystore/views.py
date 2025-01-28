@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import *
+# import * imports all of my models, instead of specifying them one by one
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import UserRegisterForm
-from .models import Customer
-# import * imports all of my models, instead of specifying them one by one
+from .models import Customer, Product, Order
+
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
