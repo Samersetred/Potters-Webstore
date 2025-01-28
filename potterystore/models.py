@@ -27,7 +27,7 @@ class Product(models.Model):
         try:
             url = self.image.url
         except:
-            url = 'static/images/placeholder image.png'
+            url = 'images/placeholder image.png'
         return url
 
 # identical model except it must return the name of the product (no null=True) because that's key information
@@ -43,6 +43,7 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.id)
+    
 # customer is a ForeignKey field. This field creates a link between the parent model (Customer) and the child model (Order). This lets me track multiples instances of the child Order model to one parent Customer model. So one customer can now place multiple orders, all of which are tracked. 
 # Also, if the referenced parent 'Customer' model is deleted, the 'customer' field is deleted
 
@@ -50,12 +51,34 @@ class Order(models.Model):
 # complete indicates whether an order has been completed
 # transaction_id creates a field to store a unique transaction ID for the order, this is optional
 # the str method returns the id to the admin database as a string representation
+    
+    @property
+    def get_cart_total(self):
+        orderitems = self.orderitem_set.all()
+        total = sum([item.get_total for item in orderitems])
+        return total 
+
+    @property
+    def get_cart_items(self):
+        orderitems = self.orderitem_set.all()
+        total = sum([item.quantity for item in orderitems])
+        return total 
+    
+    # this turns the total number of items in cart into attributes
+
 
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
     quantity = models.IntegerField(default=0, null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def get_total(self):
+        total = self.product.price * self.quantity
+        return total
+    # multiplies the product price by its quantity to work out a total
+
 
 # Here we're creating a class for our ordered product, linking it to the Product and Order classes, noting the quantity and date the product was added to the order
 # This will store information in our database that will be used by our cart page.

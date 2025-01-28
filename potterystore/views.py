@@ -1,13 +1,18 @@
-from django.shortcuts import render
 from django.http import HttpResponse
 from .models import *
 # import * imports all of my models, instead of specifying them one by one
+
+# ley login and logout imports
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import UserCreationForm
 from .forms import CreateUserForm
 from django.contrib import messages
+
+# key javascript imports
+from django.http import JsonResponse
+import json
 
 def registerPage(request):
     form = CreateUserForm()
@@ -50,6 +55,34 @@ def store(request):
     return render(request, 'potterystore/store.html', context)
 # This 
 
+def updateItem(request):
+	data = json.loads(request.body)
+	productId = data['productId']
+	action = data['action']
+	print('Action:', action)
+	print('Product:', productId)
+
+	customer = request.user.customer
+	product = Product.objects.get(id=productId)
+	order, created = Order.objects.get_or_create(customer=customer, complete=False)
+     
+     # using productId to query the product
+
+	orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
+
+	if action == 'add':
+		orderItem.quantity = (orderItem.quantity + 1)
+	elif action == 'remove':
+		orderItem.quantity = (orderItem.quantity - 1)
+
+	orderItem.save()
+
+	if orderItem.quantity <= 0:
+		orderItem.delete()
+
+	return JsonResponse('Item was added', safe=False)
+
+
 def cart(request):
     if request.user.is_authenticated:
         try:
@@ -62,7 +95,7 @@ def cart(request):
         items = []
         order = {'get_cart_total': 0, 'get_cart_items': 0}
 
-    context = {'items': items, 'order': order}
+    context = {'items':items, 'order':order}
     return render(request, 'potterystore/cart.html', context)
 
     # This is for the cart, and our cart page. If the user has made an account (is authenticated), and added items to their cart, but not checked out, this maintains the items in their cart upon their next visit to the site
@@ -76,6 +109,15 @@ def cart(request):
 
 
 def checkout(request):
-    context = {}
-    return render(request, 'potterystore/checkout.html', context)
+	if request.user.is_authenticated:
+		customer = request.user.customer
+		order, created = Order.objects.get_or_create(customer=customer, complete=False)
+		items = order.orderitem_set.all()
+	else:
+		items = []
+		order = {'get_cart_total':0, 'get_cart_items':0}
+    # This is for the empty cart for now for non-logged in user
+
+	context = {'items':items, 'order':order}
+	return render(request, 'potterystore/checkout.html', context)
     
