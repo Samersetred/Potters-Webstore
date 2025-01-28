@@ -67,8 +67,8 @@
 <body>
     <div class="container h-100">
         <div class="d-flex justify-content-center h-100">
-            <div class="user_card">
-                <div class="d-flex justify-content-center">
+            <div class="user_card" aria-label="User registration card">
+                <div class="d-flex justify-content-center" aria-label="Register Account Button">
                     <h3 id="form-title">REGISTER ACCOUNT</h3>
                 </div>
                 <div class="d-flex justify-content-center form_container">
@@ -76,43 +76,43 @@
                     <form method="POST" action="">
                         {% csrf_token %}
 
-                        <div class="input-group mb-3">
+                        <div class="input-group mb-3" aria-label="Username input field">
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fas fa-user"></i></span>
                             </div>
                             {{ form.username }}
                         </div>
-                        <div class="input-group mb-2">
+                        <div class="input-group mb-2" aria-label="Email input field">
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fas fa-envelope-square"></i></span>
                             </div>
                             {{ form.email }}
                         </div>
-                        <div class="input-group mb-2">
+                        <div class="input-group mb-2" aria-label="First password input field">
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fas fa-key"></i></span>
                             </div>
                             {{ form.password1 }}
                         </div>
-                        <div class="input-group mb-2">
+                        <div class="input-group mb-2" aria-label="Confirm password input field">
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fas fa-key"></i></span>
                             </div>
                             {{ form.password2 }}
                         </div>
-                        <div class="d-flex justify-content-center mt-3 login_container">
+                        <div class="d-flex justify-content-center mt-3 login_container" aria-label="Submit button">
                             <input class="btn login_btn" type="submit" value="Register Account">
                         </div>
                     </form>
                 </div>
                 <div class="mt-4">
-                    <div class="d-flex justify-content-center links login_container">
+                    <div class="d-flex justify-content-center links login_container" aria-label="Login link">
                         Already have an account? <a href="{% url 'login' %}" class="btn login_btn">Login</a>
                     </div>
-                    
+
                     {{form.errors}}
 
-                    <div class="d-flex justify-content-center links mt-2 login_container">
+                    <div class="d-flex justify-content-center links mt-2 login_container" aria-label="Back to store link">
                         <a href="{% url 'store' %}" class="btn login_btn">Back to Store</a>
                     </div>
                 </div>
