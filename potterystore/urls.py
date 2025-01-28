@@ -3,14 +3,16 @@ from django.urls import path
 from .views import store
 from .views import cart
 from .views import checkout
-from .views import register
-from .views import login_view
+from .views import registerPage
+from .views import loginPage
+from .views import logoutUser
 
 urlpatterns = [
 #    path("", home_page_view),
     path("", store, name="store"),
     path("cart/", cart, name="cart"),
     path("checkout/", checkout, name="checkout"),
-    path('register/', register, name='register'),
-    path('login/', login_view, name='login'),
+    path('register/', registerPage, name='register'),
+    path('login/', loginPage, name='login'),
+    path('logout/', logoutUser, name='logout'),
 ]

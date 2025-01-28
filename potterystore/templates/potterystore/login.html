@@ -64,10 +64,10 @@
 		}
 
 		#messages{
-			background-color: grey;
-			color: #fff;
-			padding: 10px;
-			margin-top: 10px;
+			background-color: #247BA0;
+			color: white;
+			padding: 20px;
+			margin-top: 20px;
 		}
 	</style>
 </head>
@@ -97,6 +97,11 @@
                     </div>
                 </form>
             </div>
+
+			{% for message in messages %}
+				<p id="messages">{{message}}</p>
+			{% endfor %}
+
             <div class="mt-4">
                 <div class="d-flex justify-content-center links login_container">
                     Don't have an account? <a href="{% url 'register' %}" class="btn login_btn">Register</a>
