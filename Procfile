@@ -1,1 +1,1 @@
-web: gunicorn Potters-Webstore.wsgi
+web: gunicorn potterystore.wsgi
